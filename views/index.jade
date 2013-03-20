@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  div.narrowleft
+    a.button(href='/inspect/'+newId) Create Bin
+
+    if recentBins.length
+      p
+        h3 Recent Bins
+        ul
+          each recent in recentBins
+            li
+              a(href='/inspect/#{recent}') /#{recent}
+  div.narrow
+    h1= title
+    p Capture the raw HTTP requests sent to a URL, so you can debug the stuff you get from webhooks.
+    p Each bin stores a maximum of 10 requests. Bins are removed if they have not been accessed for at least 48 hours.
+
+    footer Based on work by 
+      a(href='http://www.badassdon.com', target='_blank') badassdon
+      | .
+ 

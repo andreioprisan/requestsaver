@@ -1,0 +1,52 @@
+extends layout
+
+block content
+  h1= '/' + binId
+  p
+    | Send HTTP requests to 
+    a(href='/#{binId}',target='_blank') http://#{host}/#{binId}
+    |  and they will be captured on this page.
+
+  if requests.length
+    ul
+      each request in requests
+        if request.websocket
+          li.request
+            h3 WebSocket | #{request.ago} 
+              span.light (#{request.utc}, #{request.ts}ms)
+            ul.socket
+              each event in request.events
+                li 
+                  div.header 
+                    div.left 
+                      strong #{event.type} 
+                      if event.type == 'message' 
+                        | (#{event.message.type})
+                      else if event.type == 'close'
+                        | (#{event.reasonCode})
+                    div.right.light #{event.ts}ms
+
+                  if event.type == 'connection'
+                    div.body.raw #{event.raw}
+                  else if event.type == 'message'
+                    if event.message.type == 'utf8'
+                      div.body.raw #{event.message.utf8Data}
+                    else
+                      div.body.raw #{event.message.binaryData}
+                  else 
+                    div.clear
+
+        else
+          li.request
+            h3 #{request.ago} 
+              span.light (#{request.utc}, #{request.ts}ms)
+            div.raw #{request.raw}
+
+    p
+      a.button(href='/inspect/'+newId, target='_blank') New Bin
+      a(href='/', target='_blank') Home
+  else 
+    p No requests have been placed in this bin yet.
+    p
+      a(href='/') Home
+
